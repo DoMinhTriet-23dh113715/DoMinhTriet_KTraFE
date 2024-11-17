@@ -1,0 +1,59 @@
+﻿
+@model DoMinhTriet_KTraFE.Models.ViewModel.HomeProductVM
+
+<link rel="stylesheet" type="text/css" href="~/Content/myStyle/CustomerHome.css" />
+<link rel="stylesheet" type="text/css" href="~/Content/Css/StyleHome.css" />
+
+<div id="prodEntertainment">
+
+    <div>
+        <div class="title">Giải trí</div>
+
+
+    </div>
+
+    <div class="button-prodEntertainment">
+        <a href="~/Home/EntertainmentDetail">
+            <button class="btnprodEntertainment">Khám Phá</button>
+        </a>
+    </div>
+</div>
+
+@if (Model.EntertainmentProducts != null && Model.EntertainmentProducts.Any())
+{
+
+
+    <div class="product-grid">
+        <div class="prodContainer">
+            @foreach (var product in Model.EntertainmentProducts)
+            {
+                <div class="product-item">
+                    <a href="@Url.Action("ProductDetails", "Home", new { id = product.ProductID })">
+                        <div>
+                            <img src="@Html.DisplayFor(modelItem => product.ProductImage)" style="width:279.2px; height:132.95px;" class="img-fluid" />
+                        </div>
+                        <div class="prodDescription">
+                            @Html.DisplayFor(modelItem => product.ProductName)
+                        </div>
+                        <div class="prodPrice">
+                            @product.ProductPrice.ToString("N0")₫
+                        </div>
+                        <p class="prodSale">
+                            Đã bán:&nbsp; @Html.DisplayFor(modelItem => product.OrderDetails.Count)
+                        </p>
+                    </a>
+                </div>
+
+
+            }
+        </div>
+    </div>
+}
+else
+{
+    <tr>
+        <d>Không có sản phẩm nào để hiển thị.</d>
+    </tr>
+}
+
+

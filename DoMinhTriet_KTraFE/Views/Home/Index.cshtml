@@ -1,0 +1,32 @@
+﻿@model DoMinhTriet_KTraFE.Models.ViewModel.HomeProductVM
+@{
+    ViewBag.Title = "Customer home page";
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+    <link rel="stylesheet" type="text/css" href="~/Content/myStyle1/CustomerHome.css" />
+    <link rel="stylesheet" type="text/css" href="~/Content/Css/StyleHome.css" />
+
+}
+
+@* sản phẩm nổi bật *@
+@Html.Partial("_PVFeaturedProduct", Model)
+<div class="product-grid">
+    <div>
+        <div>Từ khóa nổi bật</div>
+    </div>
+    <div class="button-container2">
+        <button class="btn1"><a href="~/Home/WorkDetail">Làm việc</a></button>
+        <button class="btn2"><a href="~/Home/EntertainmentDetail">Giải trí</a></button>
+        <button class="btn3"><a href="~/Home/StudyDetail">Học tập</a></button>
+        <button class="btn4"><a href="~/Home/SpotifyDetail">Spotify</a></button>
+        <button class="btn5"><a href="~/Home/WalletDetail">Wallet</a></button>
+    </div>
+</div>
+
+
+@* sản phẩm mới *@
+@Html.Partial("_PVNewProduct", Model)
+
+
+@* sản phẩm giải trí *@
+@Html.Partial("_PVEntertainmentProduct", Model)
+

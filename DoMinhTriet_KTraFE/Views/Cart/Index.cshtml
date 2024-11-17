@@ -1,0 +1,243 @@
+﻿@{
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+@model DoMinhTriet_KTraFE.Models.ViewModel.Cart
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .cart-section {
+            width: 65%;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+            .cart-section h2 {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+
+                .cart-section h2 span {
+                    font-size: 16px;
+                    color: gray;
+                }
+
+        .product {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+            .product img {
+                width: 150px;
+                height: auto;
+                margin-right: 20px;
+            }
+
+        .product-info {
+            flex-grow: 1;
+        }
+
+            .product-info h3 {
+                font-size: 18px;
+                margin: 0 0 10px 0;
+            }
+
+            .product-info p {
+                font-size: 14px;
+                color: gray;
+                margin: 5px 0;
+            }
+
+        .price-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .price {
+            font-size: 16px;
+            color: red;
+            font-weight: bold;
+        }
+
+        .old-price {
+            font-size: 14px;
+            color: gray;
+            text-decoration: line-through;
+        }
+
+        .quantity {
+            display: flex;
+            align-items: center;
+        }
+
+            .quantity button {
+                width: 30px;
+                height: 30px;
+                border: none;
+                background-color: #eee;
+                cursor: pointer;
+            }
+
+            .quantity input {
+                width: 40px;
+                text-align: center;
+                border: 1px solid #ccc;
+            }
+
+        .remove {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .checkout-section {
+            width: 30%;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .options p, .summary p {
+            font-size: 14px;
+            margin: 10px 0;
+        }
+
+        .payment-options {
+            display: flex;
+            flex-direction: column;
+        }
+
+            .payment-options button {
+                padding: 10px;
+                margin: 10px 0;
+                border: none;
+                background-color: #007bff;
+                color: white;
+                font-size: 16px;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+
+                .payment-options button:hover {
+                    background-color: #0056b3;
+                }
+
+                .payment-options button:nth-child(2) {
+                    background-color: #28a745;
+                }
+
+                .payment-options button:nth-child(3) {
+                    background-color: #d63384;
+                }
+    </style>
+    <script language="JavaScript">
+
+    function cartUpdateQuantity(id, newQuantity) {
+        if (newQuantity < 1) return;
+
+        const form = document.createElement('form');
+        form.method = 'post';
+        form.action = '@Url.Action("UpdateQuantity", "Cart")';
+
+        const idInput = document.createElement('input');
+        idInput.type = 'hidden';
+        idInput.name = 'id';
+        idInput.value = id;
+
+        form.appendChild(idInput);
+
+        const quantityInput = document.createElement('input');
+
+        quantityInput.type = 'hidden';
+
+        quantityInput.name = 'quantity';
+
+        quantityInput.value = newQuantity; form.appendChild(quantityInput);
+
+        document.body.appendChild(forn);
+
+        form.subnit();
+    }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>Giỏ hàng </h2>
+        @if (!Model.Items.Any())
+        {<p>Bạn chưa có sản phẩm nào trong giỏ. </p> }
+        else
+        {
+            <div class="cart-section">
+                @foreach (var item in Model.Items)
+                {
+                    <div class="product" data-price="79000">
+                        <img src="@item.ProductImage" alt="@item.ProductName" style="max-height:80px;" /> @*ảnh sản phẩm*@
+                        <div class="product-info">
+                            <h3>@item.ProductName</h3>@*tên sản phẩm*@
+                            @*<p>App, Giải trí, Xem phim</p>*@
+                            @*<p class="status">Tình trạng: <span class="in-stock">Còn hàng</span></p>*@
+                            <div class="price-controls">
+                                <span class="price">@item.UnitPrice.ToString("N0") đ</span>
+                                <span class="old-price"> Thành tiền @item.TotalPrice.ToString("N0") đ</span>
+                                <div class="quantity">
+                                    @*Số lượng*@
+                                    @using (Html.BeginForm("UpdateQuantity", "Cart", FormMethod.Post))
+                                    {
+                                        <input type="hidden" name="id" value="@item.ProductID" />
+                                        <button type="button" style="width: 20px;" onclick="cartUpdateQuantity(@item.ProductID, @item.Quantity - 1)">-</button>
+                                        <input type="number" name="quantity" value="@item.Quantity" min="1" max="100" style="width:40px;text-align:right;" readonly />
+                                        <button type="button" style="width: 20px;" onclick="cartUpdateQuantity(@item.ProductID, @item.Quantity + 1)">+</button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <a href="@Url.Action("RemoveFromCart", "Cart", new { id = item.ProductID })">
+                            <img src="" alt="Remove Item" style="max-height:20px;" />
+                        </a>
+                    </div>
+                }
+
+            </div>
+
+            <div class="checkout-section">
+
+                <div class="summary">
+                    <p>Tổng giá trị sản phẩm: <span id="total-product-price">@Model.TotalValue().ToString("N0")</span></p>
+                    @Html.ActionLink("Mua hàng", "Checkout", "Cart", null, new { @class = "btn btn-danger cart-button" })
+                </div>
+            </div>
+        }
+    </div>
+
+
+</body>
+</html>

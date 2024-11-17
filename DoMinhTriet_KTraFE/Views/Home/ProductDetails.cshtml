@@ -1,0 +1,304 @@
+﻿@model DoMinhTriet_KTraFE.Models.ViewModel.ProductDetailsVM
+
+@{
+    ViewBag.Title = "ProductDetails";
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+<head>
+    <style>
+        .pro {
+            padding: 50px 10px 50px 10px;
+            background-color: ghostwhite;
+        }
+
+        .pro-section {
+            background-color: white;
+            border: 1px groove #ffffff;
+            border-radius: 10px;
+            margin: 10px;
+        }
+
+            .pro-section img {
+                max-height: 250px;
+                max-width: 200px;
+                padding: 5px;
+            }
+
+        .pro-price {
+            font-weight: bolder;
+            font-size: larger;
+            color: red;
+        }
+
+        .pro-sale {
+            font-weight: lighter;
+        }
+
+        .form-group {
+            background-color: whitesmoke;
+            border: none;
+            display: flex;
+        }
+    </style>
+</head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Detail</title>
+    <link href="~/Content/CSS/StyleProduct.css" rel="stylesheet" />
+    <script src="~/Scripts/MyJS/JavaProduct.js"></script>
+    <style>
+        .product-info {
+            width: 50%;
+        }
+    </style>
+    <script language="JavaScript">
+        function UpdateQuantity(id, newQuantity) {
+                if (newQuantity < 1) return;
+                const form = document.createElement('form');
+                form.method = 'post';
+                form.action = '@Url.Action("UpdateQuantity", "Home");
+
+                const idInput = document.createElement('input');
+                idInput.type = 'hidden';
+                idInput.name = 'id';
+                idInput.value = id;
+                form.appendChild(idInput);
+
+                const quantityInput = document.createElement('input')
+                quantityInput.type = 'hidden';
+                quantityInput.name = 'quantity';
+                quantityInput.value = newQuantity;
+                form.appendChild(quantityInput);
+
+                document.body.appendChild(form);
+                form.submit();
+
+            }
+    </script>
+
+</head>
+
+<body>
+    <div class="product-detail">
+        <div class="product-header">
+            <div class="product-image">
+                <img src="@Model.product.ProductImage" alt="Black Myth: Wukong" />
+
+            </div>
+            @if (Model != null)
+            {
+                <!-- Thông tin chi tiết sản phẩm -->
+                <div class="product-info">
+                    <h1>@Html.DisplayFor(model => model.product.ProductName)@*Black Myth: Wukong - Thuê game (1 ngày)*@</h1>
+                    <p class="product-status">Tình trạng: <span class="in-stock">Còn hàng</span></p>
+                    @*<p class="product-code">Mã sản phẩm: black-myth-wukong-rent</p>
+                        <p class="product-category">Thể loại: Action, Adventure, RPG</p>*@
+                    <p class="product-price">@Model.product.ProductPrice.ToString("N0")₫</p>
+                    <!--<p class="product-price">-->@*40.000đ <span class="original-price">1.299.000đ</span> <span class="discount">-97%*@@*</span>*@<!--</p>-->
+                    <p class="pro-sale">Đã bán:&nbsp; @Model.product.OrderDetails.Count</p>
+                    <!-- Các tùy chọn khác cho sản phẩm -->
+                    @*<div class="product-options">
+                        .
+                        <a href="~/Product/Wukong1day">
+                            <button class="option-button">Thuê 1 ngày</button>
+                        </a>*@
+                    @*<button class="option-button">Thuê 1 tuần</button>
+                        <button class="option-button">Mua game</button>
+                        <button class="option-button">Tài khoản game - Cũ</button>*@
+                    @*</div>*@
+
+                    <!-- Nút Mua ngay và Thêm vào giỏ hàng -->
+                    <div class="col-md-3 pro-section">
+                        <div class="form-group">
+                            @using (Html.BeginForm("ProductDetails", "Home", FormMethod.Get))
+                            {
+                                <h4><strong>Số lượng</strong></h4>
+                                <p>
+                                    @Html.TextBoxFor(model => model.quantity, new
+                               { @class = "form-control", @type = "number", @min = 1 })
+                                </p>
+
+
+                                @*<p>
+                                        @using (Html.BeginForm("UpdateQuantity", "Home", FormMethod.Post))
+                                        {
+                                            <input type="hidden" name="id" value="@Model.product.ProductID" />
+                                            <button type="button" style="width:20px;"
+                                                    onclick="UpdateQuantity(@Model.product.ProductID, @Model.quantity - 1)">-</button>
+                                            <input type="number" name="quantity" value="@Model.quantity" min="1"
+                                                   max="100" style="width: 40px; text-align: right;" readonly />
+                                            <button type="button" style="width: 20px;"
+                                                    onclick="UpdateQuantity(@Model.product.ProductID, @Model.quantity + 1)">+</button>
+                                        }
+                                    </p>*@
+
+                                <h4><strong>Tạm tính</strong></h4>
+                                <p> @Model.estimatedValue.ToString("N0")₫</p>
+
+                                <p>
+                                    @Html.ActionLink("Thêm vào giỏ hàng", "AddToCart", "Cart",
+                                  new { id = Model.product.ProductID, quantity = Model.quantity },
+                                  new { @class = "btn btn-info" })
+                                    @*@Html.ActionLink("Mua ngay", "AddToCart", "Cart",
+                                        new { id = Model.product.ProductID, quantity = Model.quantity },
+                                        new { @class = "btn btn-success" })*@
+                                </p>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+
+            }
+            else
+            {
+                <p>Không tìm thấy sản phẩm </p>
+            }
+
+        </div>
+        <!-- Mô tả chi tiết sản phẩm -->
+        <div class="note">
+            <h5><strong>Mô tả</strong></h5>
+            @Model.product.ProductDescription
+            @*<p>
+                        - Đây là tài khoản Steam tạo sẵn đã mua game
+                        <strong>
+                            Black Myth: Wukong Standard Version
+                        </strong>
+                        . Sau khi mua bạn sẽ nhận được thông tin tài khoản để đăng nhập.
+                        <span>
+                            Vui lòng không thay đổi thông tin tài khoản
+                        </span>
+                    </p>
+                    <p>
+                        - Giá thuê tài khoản tính theo ngày. Ví dụ bạn muốn mua 5 ngày thì chọn số lượng sản phẩm là 5.
+                    </p>
+                    <p>
+                        - Divine Shop cam kết chỉ cho 1 khách hàng thuê tại 1 thời điểm. Không bị người khác login làm gián đoạn trong khi chơi.
+                    </p>
+                    <p>
+                        - Tài khoản có thể đã có File Save sẵn, bạn có thể xóa đi và chơi từ đầu.
+                    </p>
+                    <p>
+                        - Thuê tối thiểu 3 ngày.
+                    </p>
+                </div>
+                <div class="container">
+                    <h1>
+                        Chi tiết sản phẩm
+                    </h1>
+                    <p>
+                        <strong>
+                            Black Myth: Wukong
+                        </strong>
+                        là một game hành động nhập vai (RPG) lấy cảm hứng từ thần thoại Trung Quốc. Câu chuyện dựa trên "Tây Du Ký", một trong Tứ Đại Danh Tác của văn học Trung Quốc. Bạn sẽ vào vai Nhân Vật Được Định Mệnh Chọn Lựa, đối mặt với những thách thức và kỳ quan phía trước, khám phá sự thật bị che giấu dưới tấm màn của một huyền thoại huy hoàng từ quá khứ.
+                    </p>
+                    <div class="divider">
+                    </div>
+                    <div class="image-container">
+                        <img alt="A scene from the game Black Myth: Wukong showing a snowy mountainous landscape with a character in action." height="400" src="~/Content/img/SteamGIF_Scene.gif" width="800" />
+                    </div>
+                    <h2>
+                        Khám Phá Vùng Đất Của Những Điều Kỳ Diệu
+                    </h2>
+                    <p>
+                        "Thế giới chưa thấy, nơi kỳ quan lấp lánh,
+                        <br />
+                        Và mỗi bước đi, một cảnh mới trải dài."
+                    </p>
+                    <p>
+                        Bước vào một cõi huyền bí đầy những kỳ quan và khám phá của thần thoại Trung Quốc cổ đại! Là Nhân Vật Được Định Mệnh Chọn Lựa, bạn sẽ băng qua nhiều phong cảnh tuyệt đẹp và độc đáo từ câu chuyện cổ điển, tạo nên một thiên anh hùng ca về cuộc phiêu lưu được nhìn nhận theo một cách hoàn toàn mới.
+                    </p>
+                    <div class="image-container">
+                        <img alt="A fierce battle scene from a fantasy game" class="image" height="400" src="~/Content/img/SteamGIF_Boss.gif" width="800" />
+                    </div>
+                    <div class="title">
+                        Đối Mặt Với Kẻ Thù Hùng Mạnh, Cả Cũ Lẫn Mới
+                    </div>
+                    <div class="content">
+                        "Hầu Vương đứng mạnh, danh vọng vang xa,
+                        <br />
+                        Kẻ thù trỗi dậy, thử thách danh hà."
+                        <br />
+                        <br />
+                        Một trong những điểm nhấn chính của "Tây Du Ký" là dàn nhân vật đối địch đa dạng, mỗi người đều có sức mạnh riêng biệt. Là Nhân Vật Định Mệnh Chọn Lựa, bạn sẽ gặp phải những kẻ thù hùng mạnh và những đối thủ xứng tầm trong suốt hành trình của mình. Hãy dũng cảm tham gia vào các trận chiến hoành tráng, nơi mà đầu hàng không phải là một lựa chọn.
+                    </div>
+                    <div class="image-container">
+                        <img alt="A character facing a powerful enemy in a dark, mystical setting" class="image" height="400" src="~/Content/img/SteamGIF_Boss (1).gif" width="800" />
+                    </div>
+                    <h1>
+                        Rèn Luyện Kỹ Năng Pháp Thuật Đa Dạng
+                    </h1>
+                    <p class="quote">
+                        "Phép thuật tung hoành, tài năng bộc lộ,
+                        <br />
+                        Kỹ năng giải phóng, nắm bắt thời cơ."
+                    </p>
+                    <p>
+                        Phép thuật, biến hình, và các pháp khí với đủ loại hình thái, trong đó có những thứ đối kháng nhau trong khi có những thứ khác lại tăng cường, từ lâu đã trở thành những yếu tố chiến đấu mang tính biểu tượng của thần thoại Trung Quốc. Là Nhân Vật Được Định Mệnh Chọn Lựa, ngoài việc thành thạo các kỹ thuật sử dụng gậy, bạn còn có thể tự do kết hợp các phép thuật, kỹ năng, vũ khí và trang bị khác nhau để tìm ra chiến lược chiến thắng phù hợp nhất với phong cách chiến đấu của mình.
+                    </p>
+                    <div class="image-container">
+                        <img alt="A scene from a fantasy setting with a character holding a magical staff." height="400" src="~/Content/img/SteamGIF_NPC.gif" width="800" />
+                    </div>
+                    <h1>
+                        Khám Phá Những Câu Chuyện Cảm Động Đằng Sau Mỗi Tấm Mặt Nạ
+                    </h1>
+                    <p class="quote">
+                        "Trong mọi linh hồn, dù hoang dã hay thuần thục,
+                        <br />
+                        Ẩn chứa câu chuyện của ngọn lửa cuộc đời mãnh liệt."
+                    </p>
+                    <p>
+                        Dưới lớp vỏ hung tợn và xảo quyệt của kẻ thù là một bức tranh đa chiều về nguồn gốc, tính cách, và động cơ của chúng đang chờ được tiết lộ. Là Nhân Vật Được Định Mệnh Chọn Lựa, bạn sẽ khám phá ra những câu chuyện đằng sau mỗi nhân vật, đi sâu hơn vào những trận chiến với họ để cảm nhận được tình yêu, hận thù, tham lam, và cơn thịnh nộ mà họ từng mang và vẫn còn giữ trong lòng.
+                    </p>
+                </div>
+                <div class="section">
+                    <h2>Cấu hình</h2>
+                    <div class="sub-section">
+                        <div class="sub-section-title">Tối thiểu:</div>
+                        <p>Yêu cầu vi xử lý và hệ điều hành đều chạy 64-bit</p>
+                        <p>HĐH: Windows 10 64-bit</p>
+                        <p>Bộ xử lý: Intel Core i5-8400 / AMD Ryzen 5 1600</p>
+                        <p>Bộ nhớ: 16 GB RAM</p>
+                        <p>Đồ họa: NVIDIA GeForce GTX 1060 6GB / AMD Radeon RX 580 8GB</p>
+                        <p>DirectX: Phiên bản 11</p>
+                        <p>Lưu trữ: 130 GB chỗ trống khả dụng</p>
+                        <p>Card âm thanh: Windows Compatible Audio Device</p>
+                        <p>Ghi chú thêm: HDD Supported, SSD Recommended. The above specifications were tested with DLSS/FSR/XeSS enabled.</p>
+                    </div>
+                    <div class="sub-section">
+                        <div class="sub-section-title">Khuyến nghị:</div>
+                        <p>Yêu cầu vi xử lý và hệ điều hành đều chạy 64-bit</p>
+                        <p>HĐH: Windows 10 64-bit</p>
+                        <p>Bộ xử lý: Intel Core i7-9700 / AMD Ryzen 5 5500</p>
+                        <p>Bộ nhớ: 16 GB RAM</p>
+                        <p>Đồ họa: NVIDIA GeForce RTX 2060 / AMD Radeon RX 5700 XT / INTEL Arc A750</p>
+                        <p>DirectX: Phiên bản 12</p>
+                        <p>Lưu trữ: 130 GB chỗ trống khả dụng</p>
+                        <p>Card âm thanh: Windows Compatible Audio Device</p>
+                        <p>Ghi chú thêm: SSD Required. The above specifications were tested with DLSS/FSR/XeSS enabled.</p>
+                    </div>
+                </div>
+                <div class="section warranty-section">
+                    <h2>Chính sách bảo hành</h2>
+                    <div class="warranty-sub-section">
+                        <div class="warranty-sub-section-title">Thời gian bảo hành</div>
+                        <p>- 1 ngày</p>
+                    </div>
+                    <div class="warranty-sub-section">
+                        <div class="warranty-sub-section-title">Cách thức bảo hành</div>
+                        <p>- Đổi mới sản phẩm khác nếu lỗi trong quá trình sử dụng hoặc hoàn tiền nếu không có sản phẩm bảo hành.</p>
+                        <p>- Không hỗ trợ bảo hành trong trường hợp khách hàng vi phạm chính sách của Steam và khách hàng bán lại tài khoản.</p>
+                        <p>- Không hỗ trợ bảo hành các sản phẩm game khác mà khách hàng mua vào tài khoản.</p>
+                    </div>
+                </div>*@
+        </div>
+    </div>
+
+
+</body>
+</html>
+

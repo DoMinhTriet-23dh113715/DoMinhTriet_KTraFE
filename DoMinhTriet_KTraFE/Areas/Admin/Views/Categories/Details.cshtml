@@ -1,0 +1,28 @@
+﻿@model DoMinhTriet_KTraFE.Models.Category
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>CHI TIẾT DANH MỤC </h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            Tên danh mục
+        </dt>
+
+        <dd>
+            <span class="form-control">
+                @Html.DisplayFor(model => model.CategoryName)
+            </span>
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Sửa", "Edit", new { id = Model.CategoryID }, new { @class = "btn btn-primary" }) |
+    @Html.ActionLink("Quay lại", "Index", null, new { @class = "btn btn-primary" })
+</p>

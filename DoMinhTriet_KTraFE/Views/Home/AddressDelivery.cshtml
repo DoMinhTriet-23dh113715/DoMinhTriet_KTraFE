@@ -1,0 +1,270 @@
+﻿@{
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+
+<html>
+<head>
+    <title>Địa chỉ giao hàng</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: whitesmoke;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 60%;
+            margin: 50px auto;
+            background-color: whitesmoke;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .link {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+            .link:hover {
+                text-decoration: underline;
+            }
+
+        .form-group {
+            display: flex;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+            .form-group label {
+                width: 150px;
+                font-size: 14px;
+                line-height: 30px;
+            }
+
+            .form-group input, .form-group select, .form-group textarea {
+                flex: 1;
+                padding: 5px;
+                font-size: 14px;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+            }
+
+            .form-group textarea {
+                resize: none;
+            }
+
+            .form-group .radio-group {
+                display: flex;
+                align-items: center;
+            }
+
+                .form-group .radio-group input {
+                    margin-right: 5px;
+                }
+
+                .form-group .radio-group label {
+                    margin-right: 20px;
+                    font-size: 14px;
+                }
+
+            .form-group .checkbox-group {
+                display: flex;
+                align-items: center;
+            }
+
+                .form-group .checkbox-group input {
+                    margin-right: 5px;
+                }
+
+                .form-group .checkbox-group label {
+                    font-size: 14px;
+                }
+
+        .buttons {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+            .buttons button {
+                padding: 10px 20px;
+                font-size: 14px;
+                border: none;
+                border-radius: 3px;
+                cursor: pointer;
+            }
+
+            .buttons .cancel {
+                background-color: #f5f5f5;
+                color: #333;
+                margin-right: 10px;
+            }
+
+            .buttons .submit {
+                background-color: #007bff;
+                color: #fff;
+            }
+
+        /* Lỗi hiển thị */
+        .error {
+            color: red;
+            font-size: 12px;
+            position: absolute;
+            left: 0;
+            bottom: -18px; 
+            margin: 0;
+        }
+
+        .input-error {
+            border-color: red;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>2. Địa chỉ giao hàng</h2>
+        <p>Bạn muốn giao hàng đến địa chỉ khác? <a href="#" class="link">Thêm địa chỉ giao hàng mới</a></p>
+        <div class="form-group">
+            <label for="name">Họ tên</label>
+            <input type="text" id="name" value="Quoc Tran Bao">
+            <div class="error" id="name-error"></div>
+        </div>
+        <div class="form-group">
+            <label for="phone">Điện thoại di động</label>
+            <input type="text" id="phone" value="0328370905">
+            <div class="error" id="phone-error"></div>
+        </div>
+        <div class="form-group">
+            <label for="city">Tỉnh/Thành phố</label>
+            <select id="city">
+                <option>Chọn Tỉnh/Thành phố</option>
+            </select>
+            <div class="error" id="city-error"></div>
+        </div>
+        <div class="form-group">
+            <label for="district">Quận/Huyện</label>
+            <select id="district">
+                <option>Chọn Quận/Huyện</option>
+            </select>
+            <div class="error" id="district-error"></div>
+        </div>
+        <div class="form-group">
+            <label for="ward">Phường/Xã</label>
+            <select id="ward">
+                <option>Chọn Phường/Xã</option>
+            </select>
+            <div class="error" id="ward-error"></div>
+        </div>
+        <div class="form-group">
+            <label for="address">Địa chỉ</label>
+            <textarea id="address" rows="2" placeholder="Ví dụ: 52, đường Trần Hưng Đạo"></textarea>
+            <div class="error" id="address-error"></div>
+        </div>
+        <div class="form-group">
+            <label>Loại địa chỉ</label>
+            <div class="radio-group">
+                <input type="radio" id="home" name="address-type">
+                <label for="home">Nhà riêng / Chung cư</label>
+                <input type="radio" id="company" name="address-type">
+                <label for="company">Cơ quan / Công ty</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="checkbox-group">
+                <input type="checkbox" id="default-address">
+                <label for="default-address">Sử dụng địa chỉ này làm mặc định.</label>
+            </div>
+        </div>
+        <div class="buttons">
+            <button class="cancel">Hủy bỏ</button>
+            <button class="submit" onclick="validateForm(event)">Giao đến địa chỉ này</button>
+        </div>
+    </div>
+    <script language="JavaScript">
+        function validateForm(event) {
+            event.preventDefault();
+
+            // Xóa lỗi cũ
+            clearErrors();
+
+            let isValid = true;
+
+            // Kiểm tra họ tên
+            const name = document.getElementById("name").value;
+            if (!name.trim()) {
+                displayError("name", "Họ tên không được để trống.");
+                isValid = false;
+            }
+
+            // Kiểm tra điện thoại
+            const phone = document.getElementById("phone").value;
+            const phoneRegex = /^[0-9]{10}$/; // Kiểm tra số điện thoại 10 chữ số
+            if (!phoneRegex.test(phone)) {
+                displayError("phone", "Số điện thoại không hợp lệ.");
+                isValid = false;
+            }
+
+            // Kiểm tra thành phố
+            const city = document.getElementById("city").value;
+            if (city === "Chọn Tỉnh/Thành phố") {
+                displayError("city", "Bạn phải chọn tỉnh/thành phố.");
+                isValid = false;
+            }
+
+            // Kiểm tra quận/huyện
+            const district = document.getElementById("district").value;
+            if (district === "Chọn Quận/Huyện") {
+                displayError("district", "Bạn phải chọn quận/huyện.");
+                isValid = false;
+            }
+
+            // Kiểm tra phường/xã
+            const ward = document.getElementById("ward").value;
+            if (ward === "Chọn Phường/Xã") {
+                displayError("ward", "Bạn phải chọn phường/xã.");
+                isValid = false;
+            }
+
+            // Kiểm tra địa chỉ
+            const address = document.getElementById("address").value;
+            if (!address.trim()) {
+                displayError("address", "Địa chỉ không được để trống.");
+                isValid = false;
+            }
+
+            if (isValid) {
+                alert("Form hợp lệ! Gửi thông tin.");
+                
+            }
+        }
+
+        function displayError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            const errorDiv = document.getElementById(fieldId + "-error");
+
+            field.classList.add("input-error");
+            errorDiv.textContent = message;
+        }
+
+        function clearErrors() {
+            const inputs = document.querySelectorAll(".form-group input, .form-group textarea, .form-group select");
+            inputs.forEach(input => {
+                input.classList.remove("input-error");
+            });
+
+            const errorMessages = document.querySelectorAll(".error");
+            errorMessages.forEach(error => {
+                error.textContent = "";
+            });
+        }</script>
+</body>
+</html>
+
